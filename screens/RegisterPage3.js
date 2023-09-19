@@ -1,25 +1,174 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, View, Text, Image } from "react-native";
+import { Pressable, StyleSheet, View, Text, Image, TouchableOpacity  } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RegisterPage3 = () => {
+const RegisterPage3 = ({route}) => {
+  // Access the variable parameters from the route
+  // const {id_akun, nama_lengkap,no_telp,email,password } = route.params;
+  // let profile;
+  const [profile, setProfile] = useState(route.params); 
+
+  // nama_lengkap,no_telp,email,password,jenisKelamin,tanggalLahir,beratBadan,tinggiBadan
+  const [jenisKelamin, setJenisKelamin] = useState(''); 
+  const [tanggalLahir, setTanggalLahir] = useState(''); 
+  const [beratBadan, setBeratBadan] = useState(0); 
+  const [tinggiBadan, setTinggiBadan] = useState(0); 
+
   const [labelOpen, setLabelOpen] = useState(false);
-  const [labelItems, setLabelItems] = useState([
+  const [genderintems, setgenderintems] = useState([
     { value: "Laki-Laki", label: "Laki-Laki" },
     { value: "Perempuan", label: "Perempuan" },
   ]);
+
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+
   const navigation = useNavigation();
 
+  const blockBackButton = () => {
+    // You can add a condition here to check if the back action should be blocked.
+    // For example, if you only want to block it in certain situations.
+    // In this example, the back button is always blocked.
+    return true;
+  };
+
+  const  getFormRegisterStorage = async ()=>{
+    // await AsyncStorage.setItem('formRegister', formRegister);
+    const jsonValue = await AsyncStorage.getItem('formRegister');
+    const test =  !null ? JSON.parse(jsonValue) : null;
+    console.log('params reg3')
+    console.log(route.params)
+    console.log('getting from storage reg3 ')
+    if(!route.params){
+      console.log('from async storage')
+
+      setProfile(test)
+      console.log(profile)
+
+      // setNamaLengkap(profile.nama_lengkap);
+    }else{
+      console.log('from route')
+
+      setProfile(route.params)
+    }
+
+  }
+ 
+ 
+
+  React.useEffect(() => {
+    console.log('visit reg3')
+
+    getFormRegisterStorage();
+
+    // profile = test
+    navigation.addListener('beforeRemove', (e) => {
+      if (blockBackButton()) {
+        // Prevent the user from going back
+        e.preventDefault();
+      }
+    });
+  }, [navigation]);
+
+  const conditionIsMet = true; // Change this condition as needed
+
+  const navigateToScreenB = () => {
+    if (conditionIsMet) {
+      navigation.navigate('SuccessRegistration');
+    } else {
+      // Handle the case where the condition is not met
+    }
+  };
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+    const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    setTanggalLahir(formattedDate)
+    console.log(formattedDate)
+  };
+
+  const nextHandler = async () => {
+    // console.log('profile 1')
+    // console.log(profile)
+    const profileNew = {...profile, 
+      jenisKelamin:jenisKelamin,
+      tanggalLahir:tanggalLahir,
+      beratBadan:beratBadan,
+      tinggiBadan:tinggiBadan}
+    setProfile(profileNew)
+
+    // console.log('temp 2')
+    // console.log(temp)
+    
+    await AsyncStorage.setItem('formRegister', JSON.stringify({
+      profileNew
+    }));
+
+    const jsonValue = await AsyncStorage.getItem('formRegister');
+    const test =  !null ? JSON.parse(jsonValue) : null;
+    console.log('succes store storage reg3')
+    console.log(test)
+
+    // navigation.navigate("RegisterPage4",{
+    //     id_akun,
+    //     nama_lengkap,
+    //     no_telp,
+    //     email,
+    //     password,
+    //     jenisKelamin,
+    //     tanggalLahir,
+    //     beratBadan,
+    //     tinggiBadan
+    // })
+    // console.log('profile reg3 before reg4')
+
+    // console.log({...profile, 
+    //   jenisKelamin:jenisKelamin,
+    //   tanggalLahir:tanggalLahir,
+    //   beratBadan:beratBadan,
+    //   tinggiBadan:tinggiBadan})
+
+    navigation.navigate("RegisterPage4",
+      profileNew
+    )
+  }
+
+  const handleClickDatePicker = () => {
+    // Your function to run when the input is clicked
+    setShowDatePicker(true);
+    console.log(showDatePicker)
+  };
+  // const test = () => {
+  //   console.log(nama_lengkap,jenisKelamin,tanggalLahir,beratBadan,tinggiBadan)
+  // };
   return (
     <View style={styles.registerPage3}>
       <View style={[styles.buttonParent, styles.buttonParentPosition]}>
         <Pressable
           style={[styles.button, styles.btnShadowBox]}
-          onPress={() => navigation.navigate("RegisterPage4")}
+          // onPress={() => navigation.navigate("RegisterPage4",{
+          //   id_akun,
+          //   nama_lengkap,
+          //   no_telp,
+          //   email,
+          //   password,
+          //   jenisKelamin,
+          //   tanggalLahir,
+          //   beratBadan,
+          //   tinggiBadan
+          //   }
+          // )}
+          // onPress={test}
+          onPress={nextHandler}
         >
           <LinearGradient
             style={[styles.btn, styles.btnPosition]}
@@ -57,19 +206,44 @@ const RegisterPage3 = () => {
               placeholder="Jenis Kelamin"
             >
               <DropDownPicker
+                placeholder="Jenis Kelamin"
+                value={jenisKelamin}
+                setValue={setJenisKelamin}
                 open={labelOpen}
                 setOpen={setLabelOpen}
-                items={labelItems}
+                items={genderintems}
                 labelStyle={styles.labelValue}
+                
               />
+            {/* </View> */}
+            {/* <View> */}
+              <TouchableOpacity style={[{ top: 15, minHeight:50}]}  onPress={handleClickDatePicker}>
+                <Input
+                  placeholder="Tanggal Lahir"
+                  required={true}
+                  leftIcon={{ name: "calendar-range", type: "material-community" }}
+                  inputStyle={{ color: "#ada4a5" }}
+                  containerStyle={styles.labelTextInputInput}
+                  type="date"
+                  value={tanggalLahir}
+                  // onChange={(e) => setTanggalLahir(e.target.value)}
+                  onChangeText={(e) => setTanggalLahir(e)}
+                  
+                  disabled={true}
+
+                />
+              </TouchableOpacity>
             </View>
-            <Input
-              placeholder="Tanggal Lahir"
-              required={true}
-              leftIcon={{ name: "calendar-range", type: "material-community" }}
-              inputStyle={{ color: "#ada4a5" }}
-              containerStyle={styles.labelTextInputInput}
-            />
+            {showDatePicker && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="date" // Change to "time" for time picker
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
+              />
+            )}
             <View style={[styles.label1, styles.labelLayout]}>
               <View style={styles.buttonKg}>
                 <LinearGradient
@@ -90,6 +264,11 @@ const RegisterPage3 = () => {
                 }}
                 inputStyle={{ color: "#ada4a5" }}
                 containerStyle={styles.component1TextInputInput}
+                type="number"
+                value={beratBadan}
+                // onChange={(e) => setBeratBadan(parseFloat(e.target.value))}
+                onChangeText={(e) => setBeratBadan(parseFloat(e))}
+
               />
             </View>
             <View style={[styles.label2, styles.labelLayout]}>
@@ -109,6 +288,11 @@ const RegisterPage3 = () => {
                 leftIcon={{ name: "swap-vertical", type: "material-community" }}
                 inputStyle={{ color: "#ada4a5" }}
                 containerStyle={styles.component2TextInputInput}
+                type="number"
+                value={tinggiBadan}
+                // onChange={(e) => setTinggiBadan(parseFloat(e.target.value))}
+                onChangeText={(e) => setTinggiBadan(parseFloat(e))}
+
               />
             </View>
           </View>
@@ -120,15 +304,17 @@ const RegisterPage3 = () => {
 
 const styles = StyleSheet.create({
   labelValue: {
-    color: "#ada4a5",
-    fontSize: 12,
-    fontFamily: "Poppins_regular",
+    // color: "#ada4a5",
+    fontSize: 15,
+    // fontWeight: "bold"
+    // fontFamily: "Poppins_regular",
   },
   labelTextInputInput: {
     left: 0,
     width: 315,
     height: 48,
-    top: 63,
+    // top: 25,
+    // backgroundColor:"red",
     position: "absolute",
   },
   component1TextInputInput: {

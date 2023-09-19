@@ -1,22 +1,119 @@
 import * as React from "react";
 import { useState } from "react";
-import { Pressable, StyleSheet, View, Image, Text } from "react-native";
+import { Pressable, StyleSheet, View, Image, Text, Alert } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { Input,Icon } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, Color, Border, FontSize } from "../GlobalStyles";
-
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { ActivityIndicator } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import {signInWithEmailAndPassword} from '@react-native-firebase/auth';
 // isPasswordVisible = false;
+import {setCurrentUser} from "../helper/AsyncStorageHelper"
+import { black } from "react-native-paper/lib/typescript/styles/colors";
+
 
 const LoginPage = () => {
   const navigation = useNavigation();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  var username = "secure_password";
-  var password = "secure_password";
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const user = auth().currentUser;
+
+  // var username = "secure_password";
+  // var password = "secure_password";
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  const signIn = async () => {
+    setLoading(true);
+    // alert("Gagal","Silahkan masukkan email dan password");
+    // // return;
+    if(email==''|| password==''){
+      alert("Silahkan masukkan email dan password")
+      setLoading(false);
+      // console.log('kosong')
+    }else{
+    await auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(async response => {
+      console.log(response);
+      // // alert('Sign in Success');
+      // await setCurrentUser();
+
+      // //store authuser
+      // const authUser = JSON.stringify({
+      //   userToken:response.user.uid,
+      //   userEmail:response.user.email
+      // });
+      // await AsyncStorage.setItem('authUser', authUser);
+
+      // //read & store akun
+      // const akunRef = firestore().collection('akun');
+      // const akunRefSnapshot = await akunRef.where('email', '==', email).limit(1).get();
+      // if (!akunRefSnapshot.empty) {
+      //   const akun = akunRefSnapshot.docs[0].data();
+      //   await AsyncStorage.setItem('akun', JSON.stringify({
+      //     id_akun:akunRefSnapshot.docs[0].id,
+      //     ...akun}));
+        
+      // } else {
+      //   console.log('Tidak ada data akun yang cocok.');
+      // }
+
+
+      // //read & store profile
+      // const profileRef = firestore().collection('profile');
+      // const profileRefSnapshot = await profileRef.where('id_akun', '==', akunRefSnapshot.docs[0].id).get();
+      // if (!profileRefSnapshot.empty) {
+      //   // Loop melalui hasil query
+      //   let listProfile = [];
+      //   profileRefSnapshot.forEach((doc) => {
+      //     listProfile.push(doc.data())
+          
+      //   });
+
+      //   await AsyncStorage.setItem('listProfile', JSON.stringify({
+      //     listProfile}));
+
+      // } else {
+      //   console.log('Tidak ada data profile yang cocok.');
+      // }
+      //read & store profile
+      // const jsonValue = await AsyncStorage.getItem('listProfile');
+      // const test =  !null ? JSON.parse(jsonValue) : null;
+      // console.log(test)
+      // console.log(test.userEmail)
+
+      // return jsonValue != null ? JSON.parse(jsonValue) : null;
+      // await AsyncStorage.setItem('userToken', response.user.uid);
+      // await AsyncStorage.setItem('userEmail', response.user.email);
+
+      setLoading(false);
+      navigation.replace('SecureStack');
+    
+    })
+    .catch(error => {
+      setLoading(false);
+      console.error(error);
+    });
+    }
+    // try{
+    //   const response = await signInWithEmailAndPassword(auth, email,password);
+    //   console.log(response);
+    // } catch (error){
+    //   console.log(error);
+    //   alert('Sign in failed: ' + error.message);
+    // } finally {
+    //   setLoading(false);
+    //   alert('Sign in Success');
+    // }
+  }
 
 
   return (
@@ -24,9 +121,10 @@ const LoginPage = () => {
       <View style={[styles.loginBtnParent, styles.labelSectionPosition]}>
         <Pressable
           style={styles.loginBtn}
-          onPress={() =>
-            navigation.navigate("BottomTabsRoot", { screen: "Home" })
-          }
+          // onPress={() =>
+          //   navigation.navigate("BottomTabsRoot", { screen: "Home" })
+          // }
+          onPress={signIn}
         >
           <LinearGradient
             style={[styles.loginBtnChild, styles.loginBtnChildPosition]}
@@ -36,12 +134,17 @@ const LoginPage = () => {
             angle={-85.58}
           />
           <View style={styles.iconlyboldloginParent}>
+          {loading ? <ActivityIndicator color="white" />:
+          <>
             <Image
               style={[styles.iconlyboldlogin, styles.loginBtnChildPosition]}
               resizeMode="cover"
               source={require("../assets/iconlyboldlogin1.png")}
             />
             <Text style={[styles.login, styles.loginTypo]}>Login</Text>
+          </>
+          }
+           
           </View>
         </Pressable>
         <View style={styles.or}>
@@ -89,6 +192,8 @@ const LoginPage = () => {
           leftIcon={{ name: "email-outline", type: "material-community" }}
           inputStyle={{ color: "#ada4a5" }}
           containerStyle={styles.labelTextInputInput}
+          onChangeText={(text)=>setEmail(text)}
+          value={email}
         />
         <Input
           placeholder="Password"
@@ -106,6 +211,8 @@ const LoginPage = () => {
           }
           inputStyle={{ color: "#ada4a5" }}
           containerStyle={styles.labelTextInput1Input}
+          onChangeText={(text)=>setPassword(text)}
+          value={password}
         />
         <Pressable
           style={styles.lupaPassBtn}
@@ -285,6 +392,7 @@ const styles = StyleSheet.create({
     width: 50,
     justifyContent: "center",
     position: "absolute",
+    // backgroundColor:"black",
   },
   text: {
     alignSelf: "stretch",

@@ -1,12 +1,91 @@
-import * as React from "react";
+// import * as React from "react";
+// import { useEffect,useState } from "react";
+import React, { useState,useEffect } from "react";
+
+
 import { Text, StyleSheet, View, Image, Pressable } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation,StackActions  } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SuccessRegistration = () => {
+const SuccessRegistration = ({route}) => {
+  // let profile = route.params;
+  const [profile, setProfile] =useState(route.params);
+
+  const [namaLengkap, setNamaLengkap] = React.useState('');
+
+  // const  getFormRegisterStorage = async ()=>{
+  //   // await AsyncStorage.setItem('formRegister', formRegister);
+  //   const jsonValue = await AsyncStorage.getItem('formRegister');
+  //   const test =  !null ? JSON.parse(jsonValue) : null;
+  //   console.log('getting from storage')
+
+  //   profile = test
+  //   setNamaLengkap(profile.nama_lengkap);
+  //   console.log(profile)
+  // }
+  // if(profile.nama_lengkap == ""){
+  //   getFormRegisterStorage();
+    
+  // }
+  const blockBackButton = () => {
+    // You can add a condition here to check if the back action should be blocked.
+    // For example, if you only want to block it in certain situations.
+    // In this example, the back button is always blocked.
+    return true;
+  };
+  useEffect(() => {
+    console.log('visit succpage')
+  
+    const  getFormRegisterStorage = async ()=>{
+      const jsonValue = await AsyncStorage.getItem('formRegister');
+      const test =  !null ? JSON.parse(jsonValue) : null;
+      console.log('getting from storage succ')
+      if(!route.params){
+        // profile = test
+        console.log('from async storage')
+
+        setProfile(test)
+
+        setNamaLengkap(profile.nama_lengkap);
+      }else{
+        // setNamaLengkap('User');
+        console.log('from route')
+
+        setProfile(route.params)
+        setNamaLengkap(profile.nama_lengkap);
+
+
+      }
+
+     
+      // console.log(profile)
+    }
+    getFormRegisterStorage();
+    // if(profile){
+    //   if(profile.nama_lengkap == ""){
+    //     getFormRegisterStorage();
+        
+    //   }else{
+    //     setNamaLengkap(profile.nama_lengkap);
+
+    //   }
+    // }
+    
+    // return subscriber; // unsubscribe on unmount
+    navigation.addListener('beforeRemove', (e) => {
+      if (blockBackButton()) {
+        // Prevent the user from going back
+        e.preventDefault();
+      }
+    });
+  }, []);
+  console.log(profile)
   const navigation = useNavigation();
-
+  const test = ()=>{
+    console.log(profile)
+  }
   return (
     <View style={styles.successRegistration}>
       <View style={[styles.titleSectionParent, styles.titlePosition]}>
@@ -20,7 +99,7 @@ const SuccessRegistration = () => {
             <Text
               style={[styles.selamatBergabungStefani]}
             >
-              Selamat Bergabung, Stefani
+              Selamat Bergabung, {namaLengkap.split(" ")[0]}
             </Text>
           </View>
         </View>
@@ -32,9 +111,17 @@ const SuccessRegistration = () => {
       </View>
       <Pressable
         style={[styles.button, styles.btnShadowBox]}
-        onPress={() =>
-          navigation.navigate("BottomTabsRoot", { screen: "Home" })
+        onPress={() =>{
+          // navigation.navigate("BottomTabsRoot", { screen: "Home" })
+          // navigation.dispatch(StackActions.replace("BottomTabsRoot", { screen: "Home" }))
+          navigation.navigate('SecureStack')
+          // navigation.navigate("BottomTabsRoot", { screen: "Home" })
+          // navigation.dispatch(StackActions.replace("SecureStack"))
+
+
+          }
         }
+        // onPress={test}
       >
         <LinearGradient
           style={[styles.btn, styles.btnShadowBox]}

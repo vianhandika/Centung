@@ -21,6 +21,7 @@ export const Color = {
   borderColor: "#f7f8f8",
   gray1: "#7b6f72",
   purp1: "#C58BF2",
+  gray3: "#f2f4f5"
 };
 /* Paddings */
 export const Padding = {

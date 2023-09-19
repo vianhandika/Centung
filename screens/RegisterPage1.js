@@ -1,21 +1,116 @@
 import React, { useState } from "react";
 import { Text, StyleSheet, Image, View, Pressable } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import { CheckBox, Input, Icon } from "@rneui/themed";
+import { CheckBox, Input, Icon,Dialog } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { FontFamily, FontSize, Color, Border } from "../GlobalStyles";
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import { ActivityIndicator } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RegisterPage1 = () => {
+
+const RegisterPage1 = ({}) => {
   const navigation = useNavigation();
   const [privacyPolicychecked, setPrivacyPolicychecked] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [nama_lengkap, setNamaLengkap] = useState('');
+  const [no_telp, setNoTelp] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [loading, setLoading] = useState(false);
+
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const createAccount = async (nama_lengkap, no_telp, email, password) => {
+  // const createAccount = async () => {
+    setLoading(true);
+    // return;
+    try {
+      console.log({nama_lengkap, no_telp, email, password})
+      const response = await auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(async() => {
+        console.log('User account created & signed in!');
+        
+        const akunRef = firestore().collection('akun');
+        const akunDoc = await akunRef.add({
+          // nama_lengkap: nama_lengkap,
+          no_telp: no_telp,
+          email: email,
+          password: password,
+          created_at :new Date(),
+        });
+        const id_akun = akunDoc.id;
+        console.log('Akun berhasil ditambahkan dengan ID:', akunDoc.id);
+        
+
+        const formRegister = JSON.stringify({
+          id_akun:akunDoc.id, 
+          nama_lengkap:nama_lengkap,
+          no_telp:no_telp,
+          email: email,
+          password: password,
+        });
+        
+        await AsyncStorage.setItem('formRegister', formRegister);
+        const jsonValue = await AsyncStorage.getItem('formRegister');
+        const test =  !null ? JSON.parse(jsonValue) : null;
+        console.log('succes store storage reg1')
+        console.log(test)
+        setLoading(false);
+        navigation.replace("SecureStack2",{id_akun,nama_lengkap,no_telp,email,password})
+
+        // navigation.navigate("RegisterPage3",{id_akun,nama_lengkap,no_telp,email,password})
+        // navigation.navigate("RegisterPage3",{id_akun:'test',nama_lengkap:'test',no_telp:'test',email:'test',password:'test'})
+
+
+      })
+      .catch(error => {
+        setLoading(false);
+
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+          alert('That email address is already in use!');
+
+        }
+    
+        else if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+          alert('That email address is invalid!');
+
+        }
+        else{
+          alert(error);
+
+        }
+        // console.error(error);
+
+      });
+      console.log(response)
+    } catch (error) {
+      setLoading(false);
+      console.error('Gagal menambahkan akun:', error);
+      alert(error);
+
+    }
+    
+  };
+
+
+
   return (
     <View style={styles.registerPage1}>
+      <Dialog isVisible={loading}>
+        {/* <Dialog.Title title="Dialog Title"/> */}
+        {/* <Text style={{ color: 'black' }}>menyimpan</Text> */}
+        <Dialog.Loading />
+
+      </Dialog>
       <View style={[styles.orParent, styles.orLayout]}>
         <View style={[styles.or, styles.orLayout]}>
           <Text style={styles.atau}>Atau</Text>
@@ -49,7 +144,11 @@ const RegisterPage1 = () => {
         </Pressable>
         <Pressable
           style={[styles.registerBtn, styles.orLayout]}
-          onPress={() => navigation.navigate("RegisterPage2")}
+          // onPress={() => navigation.navigate("RegisterPage3",{nama_lengkap,no_telp,email,password})}
+          onPress={() => createAccount(nama_lengkap,no_telp,email,password)}
+          // onPress={createAccount}
+          
+
         >
           <LinearGradient
             style={[styles.registerBtnChild, styles.googleChildPosition]}
@@ -58,11 +157,13 @@ const RegisterPage1 = () => {
             useAngle={true}
             angle={-85.58}
           />
-          <Text style={[styles.daftar, styles.daftarTypo]}>Daftar</Text>
+          {loading ? <ActivityIndicator color="white" style={[styles.daftar, styles.daftarTypo]}/>:
+            <Text style={[styles.daftar, styles.daftarTypo]}>Daftar</Text>
+          }
         </Pressable>
         <Pressable
           style={styles.loginSocialMedia}
-          onPress={() => navigation.navigate("LoginPage")}
+          // onPress={() => navigation.navigate("LoginPage")}
         >
           <View style={styles.googleChildPosition}>
             <View style={[styles.googleBtnChild, styles.googleChildPosition]} />
@@ -98,6 +199,8 @@ const RegisterPage1 = () => {
             }
             inputStyle={{ color: "#ada4a5" }}
             containerStyle={styles.labelTextInputInput}
+            value={password}
+            onChangeText={(e) => setPassword(e)}
           />
           <Input
             placeholder="Email"
@@ -105,6 +208,11 @@ const RegisterPage1 = () => {
             leftIcon={{ name: "email-outline", type: "material-community" }}
             inputStyle={{ color: "#ada4a5" }}
             containerStyle={styles.labelTextInput1Input}
+            type="email"
+            value={email}
+            onChangeText={(e) => setEmail(e)}
+            
+            
           />
           <Input
             placeholder="Nomor Telp"
@@ -112,6 +220,9 @@ const RegisterPage1 = () => {
             leftIcon={{ name: "phone-outline", type: "material-community" }}
             inputStyle={{ color: "#ada4a5" }}
             containerStyle={styles.labelTextInput2Input}
+            type="text"
+            value={no_telp}
+            onChangeText={(e) => setNoTelp(e)}
           />
           <Input
             placeholder="Nama Lengkap"
@@ -119,6 +230,9 @@ const RegisterPage1 = () => {
             leftIcon={{ name: "account-outline", type: "material-community" }}
             inputStyle={{ color: "#ada4a5" }}
             containerStyle={styles.labelTextInput3Input}
+            type="text"
+            value={nama_lengkap}
+            onChangeText={(e) => setNamaLengkap(e)}
           />
           <View style={styles.titleSection}>
             <Text style={[styles.holaDisana, styles.daftarLayout]}>
