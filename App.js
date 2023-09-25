@@ -25,7 +25,7 @@ import Profile from "./screens/Profile";
 import Graph from "./screens/Graph";
 import Home from "./screens/Home";
 import LoadingScreen from "./screens/LoadingScreen";
-import ManageProfile from "./screens/ManageProfile";
+import FormProfile from "./screens/FormProfile";
 
 
 import HomeIcon1 from "./components/Home1";
@@ -171,9 +171,9 @@ function SecureComponent({ route }){
             {/* </>: */}
             <SecureStack.Screen name="BottomTabsRoot" component={BottomTabsRoot} />
             <SecureStack.Screen
-                name="ManageProfile"
-                component={ManageProfile}
-                // options={{ headerShown: false }}
+                name="FormProfile"
+                component={FormProfile}
+                options={{ headerShown: false }}
               />
             {/* <SecureStack.Screen
             name="SuccessRegistration"

@@ -72,7 +72,6 @@ const Home = ({}) => {
         const listProfileJson = await AsyncStorage.getItem('listProfile');
         const listProfileValue = listProfileJson ? JSON.parse(listProfileJson) : [];
         setlistProfile(listProfileValue.listProfile)  
-        setselectedProfile(listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
 
         // if (listProfileJson) {
         //   const listProfileValue = JSON.parse(listProfileJson);
@@ -117,10 +116,12 @@ const Home = ({}) => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   // Check if listProfile is defined before mapping over it
-  //   setData()
-  // }, [listProfile]);
+  useEffect(() => {
+    // Check if listProfile is defined before mapping over it
+    // setData()
+    setselectedProfile(listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
+
+  }, [listProfile]);
 
   const signOut = async () => {
     // const jsonValue = await AsyncStorage.getItem('listProfile');
@@ -177,13 +178,17 @@ const Home = ({}) => {
       <Dialog
         isVisible={labelOpen}
         onBackdropPress={toogleOpen}
-        overlayStyle={{width:'100%'}}
+        overlayStyle={{width:'80%'}}
         // containerStyle={{width:300}}
       >
-        <Dialog.Title titleStyle={{color:'black'}} title="Pilih Profile"/>
+        <Dialog.Title 
+        titleStyle={{color:'black'}} 
+        title="Pilih Profile"/>
         <Card.Divider/>
         {/* <View style={{width:'100%',height:200,backgroundColor:'red'}}> */}
-        <ScrollView style={{ width: '100%', height: 200, backgroundColor: 'red' }}>
+        <ScrollView 
+        // style={{ width: '100%', height: 200, backgroundColor: 'red' }}
+        >
         {listProfile.length > 0 ? (listProfile.map((l, i) => (
           // <TouchableOpacity 
           //   key={i}
@@ -197,45 +202,99 @@ const Home = ({}) => {
           //   // onPress={[setselectedProfile(l.value),toogleOpen]}
           //   >
           
-          <ListItem.Swipeable
+          // <ListItem.Swipeable
+          <ListItem
+
             key={i}
             containerStyle={{
               marginHorizontal: -10,
               borderRadius: 8,
-              backgroundColor:'black'
+              // backgroundColor:'yellow'
             }}
+            pad={5}
             
             // style={[styles.itemSwipe]}
-            rightContent={(reset) => (
-              <Button
-                title="Delete"
-                onPress={() => {
-                  reset();
-                  // Handle deletion of the item at index
-                  // const updatedList = [...listRiwayatSakit];
-                  // updatedList.splice(index, 1);
-                  // setListRiwayatSakit(updatedList);
-                }}
-                icon={{ name: 'delete', color: 'white' }}
-                buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
-              />
-            )}
+            // rightContent={(reset) => (
+            //   <Button
+            //     title="Delete"
+            //     onPress={() => {
+            //       reset();
+            //       // Handle deletion of the item at index
+            //       // const updatedList = [...listRiwayatSakit];
+            //       // updatedList.splice(index, 1);
+            //       // setListRiwayatSakit(updatedList);
+            //     }}
+            //     icon={{ name: 'delete', color: 'white' }}
+            //     buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
+            //   />
+            // )}
             // onPress={toogleOpen(l.value)}
+            onPress={()=> {
+              setselectedProfile(l.nama_lengkap);
+              toogleOpen();
+            }}
           >
             {/* <Avatar rounded source={{ uri: l.avatar_url }} /> */}
+
+           
             <Avatar
               // size={64}
               rounded
               title={getInitials(l.nama_lengkap)}
               containerStyle={{ backgroundColor: '#3d4db7' }}
             />
-            <ListItem.Content>
+            <ListItem.Content >
               <ListItem.Title style={{ fontWeight: '700' }}>
                 {l.nama_lengkap}
               </ListItem.Title>
+              
               {/* <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle> */}
             </ListItem.Content>
-          </ListItem.Swipeable>
+            <TouchableOpacity
+                // style={{height:"100%"}}
+                onPress={() => console.log('edit')}
+                // onPress={signOut}
+
+              >
+                <View 
+                // style={styles.iconContainer}
+                >
+                  <Icon
+                    name="pencil" // Replace with the name of your desired icon
+                    type="material-community"
+                    style={{backgroundColor:Color.gray3,
+                      borderRadius:10,padding:2}}
+                    // style={{backgroundColor:Color.gray3}}
+                    size={25}
+                    color="orange" // Customize the icon color
+                  />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                // style={styles.notification}
+                // onPress={() => navigation.navigate("WelcomeScreen2")}
+                // onPress={signOut}
+                onPress={() => console.log('delete')}
+
+              >
+                <View 
+                  // style={{height:"100%"}}
+
+                >
+                  <Icon
+                    name="delete" // Replace with the name of your desired icon
+                    type="material-community"
+                    style={{backgroundColor:Color.gray3,
+                      borderRadius:10,padding:2}}
+                    // style={{backgroundColor:Color.gray3}}
+                    size={25}
+                    color="red" // Customize the icon color
+                  />
+                </View>
+              </TouchableOpacity>
+          </ListItem>
+          // </ListItem.Swipeable>
+
     
           //</TouchableOpacity>
         ))
@@ -262,10 +321,10 @@ const Home = ({}) => {
             //   color: 'black',
             // }}
             titleStyle={{fontWeight:'bold'}}
-            title='Manage Profile'
+            title='Tambah Profile'
             onPress={()=>{
               toogleOpen()
-              navigation.push('ManageProfile')
+              navigation.push('FormProfile')
             }}
             // buttonStyle={styles.button}
           />
