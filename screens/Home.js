@@ -17,7 +17,9 @@ const Home = ({}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
 
-  const [selectedProfile, setselectedProfile] = useState('test'); 
+  const [selectedProfile, setselectedProfile] = useState('user'); 
+  const [selectedProfileObj, setselectedProfileObj] = useState(); 
+
   const [labelOpen, setLabelOpen] = useState(false);
   const [listProfile, setlistProfile] = useState([
     {
@@ -60,41 +62,58 @@ const Home = ({}) => {
     setLabelOpen(!labelOpen);
   };
 
-  
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+
+      await setCurrentUser();
+      const listProfileJson = await AsyncStorage.getItem('listProfile');
+      const listProfileValue = listProfileJson ? JSON.parse(listProfileJson) : [];
+      const selectedProfileJson = await AsyncStorage.getItem('selectedProfile');
+      const selectedProfileValue = selectedProfileJson ? JSON.parse(selectedProfileJson) : [];
+      setlistProfile(listProfileValue.listProfile)  
+      setselectedProfileObj(selectedProfileValue)
+      // if (listProfileJson) {
+      //   const listProfileValue = JSON.parse(listProfileJson);
+      //   setlistProfile(listProfileValue);
+      //   console.log('listProfileValue :', listProfileJson);
+
+      //   console.log('listProfileValue type:', typeof listProfileValue);
+      //   setLoading(false);
+      // } else {
+      //   console.log('listProfileJson is null or undefined');
+      // }
+      // Loading is complete, set isLoading to false
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false); // Set isLoading to false on error as well
+    }
+  };
 
   useEffect(() => {
     console.log('visit home')
     // setLoading(true);
     // Simulate an async operation (e.g., API call, data fetching)
-    const fetchUserData = async () => {
-      try {
-        await setCurrentUser();
-        const listProfileJson = await AsyncStorage.getItem('listProfile');
-        const listProfileValue = listProfileJson ? JSON.parse(listProfileJson) : [];
-        setlistProfile(listProfileValue.listProfile)  
-
-        // if (listProfileJson) {
-        //   const listProfileValue = JSON.parse(listProfileJson);
-        //   setlistProfile(listProfileValue);
-        //   console.log('listProfileValue :', listProfileJson);
-
-        //   console.log('listProfileValue type:', typeof listProfileValue);
-        //   setLoading(false);
-        // } else {
-        //   console.log('listProfileJson is null or undefined');
-        // }
-        // Loading is complete, set isLoading to false
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false); // Set isLoading to false on error as well
-      }
-    };
+    
     // Call the asynchronous function
     fetchUserData();
     // setselectedProfile(listProfile[0].value); // NEED CHANGE (LOAD ASYNC)
   
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // Check if the current route is "ScreenA"
+      if (navigation.isFocused()) {
+        // Trigger the refresh function
+        fetchUserData();
+      }
+    });
+
+    // Clean up the listener when the component unmounts
+    return unsubscribe;
+  }, [navigation]);
   
   // const setData = async () => {
   //   try {
@@ -119,9 +138,24 @@ const Home = ({}) => {
   useEffect(() => {
     // Check if listProfile is defined before mapping over it
     // setData()
-    setselectedProfile(listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
+    // setselectedProfile(listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
+    // setselectedProfileObj(listProfile[0]); // NEED CHANGE (LOAD ASYNC)
+
+
+    
 
   }, [listProfile]);
+
+  useEffect(() => {
+    // Check if listProfile is defined before mapping over it
+    // setData()
+    setselectedProfile(selectedProfileObj && selectedProfileObj.nama_lengkap !== undefined?selectedProfileObj.nama_lengkap:'user'); // NEED CHANGE (LOAD ASYNC)
+    // setselectedProfileObj(listProfile[0]); // NEED CHANGE (LOAD ASYNC)
+    // console.log(selectedProfileObj)
+
+    
+
+  }, [selectedProfileObj]);
 
   const signOut = async () => {
     // const jsonValue = await AsyncStorage.getItem('listProfile');
@@ -153,8 +187,13 @@ const Home = ({}) => {
     return initials.join('');
   }
 
-  function selectProfile(name) {
-    setselectedProfile(name)
+  // function selectProfile(profile) {
+  const selectProfile = async (profile) => {
+    setselectedProfile(profile.nama_lengkap)
+    setselectedProfileObj(profile)
+    const data = JSON.stringify(profile);
+    await AsyncStorage.setItem('selectedProfile', data);
+
     // return
   }
 
@@ -230,7 +269,9 @@ const Home = ({}) => {
             // )}
             // onPress={toogleOpen(l.value)}
             onPress={()=> {
-              setselectedProfile(l.nama_lengkap);
+              // setselectedProfile(l.nama_lengkap);
+              // setselectedProfileObj(l);
+              selectProfile(l);
               toogleOpen();
             }}
           >

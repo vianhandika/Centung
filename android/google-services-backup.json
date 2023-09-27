@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "217357117452",
-    "project_id": "centung-aade6",
-    "storage_bucket": "centung-aade6.appspot.com"
+    "project_number": "943515535398",
+    "project_id": "centung-189d6",
+    "storage_bucket": "centung-189d6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:217357117452:android:209c8622fef667f2282629",
+        "mobilesdk_app_id": "1:943515535398:android:e058d2032fbf923f227ee7",
         "android_client_info": {
           "package_name": "com.centung"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAVdowkzs26fSi22a6vzQAI5zAkU5GUPtY"
+          "current_key": "AIzaSyByrh0eyygqR3sTq3w8sK4psmUbiV_cfAQ"
         }
       ],
       "services": {
