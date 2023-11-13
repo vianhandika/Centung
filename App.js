@@ -57,15 +57,15 @@ function BottomTabsRoot({ navigation }) {
     <HomeIcon />,
     <GraphIcon />,
     <CalendarIcon />,
-    <DocumentIcon />,
-    <AdviceIcon1 />,
+    // <DocumentIcon />,
+    // <AdviceIcon1 />,
   ]);
   const [bottomTabItemsActive] = React.useState([
     <HomeIcon1 />,
     <GraphIcon1 />,
     <CalendarIcon1 />,
-    <DocumentIcon1 />,
-    <AdviceIcon />,
+    // <DocumentIcon1 />,
+    // <AdviceIcon />,
   ]);
   return (
     <Tab.Navigator
@@ -86,6 +86,8 @@ function BottomTabsRoot({ navigation }) {
               width: 375,
               height: 80,
               flexDirection: "row",
+              alignItems: 'center', // Center vertically
+              justifyContent: 'center', // Center horizontally
             }}
           >
             {bottomTabItemsNormal.map((item, index) => {
@@ -125,7 +127,7 @@ function BottomTabsRoot({ navigation }) {
         component={Calendar}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Journal"
         component={Journal}
         options={{ headerShown: false }}
@@ -134,7 +136,7 @@ function BottomTabsRoot({ navigation }) {
         name="Advice"
         component={Advice}
         options={{ headerShown: false }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

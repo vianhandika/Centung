@@ -9,15 +9,17 @@ import LinearGradient from "react-native-linear-gradient";
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const FormProfile = () => {
+const FormProfile = ({route}) => {
+
+  const { action, profileData } = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
   const [namaLengkap, setNamaLengkap] = useState('');
   const [jenisKelamin, setJenisKelamin] = useState('');
   const [tanggalLahir, setTanggalLahir] = useState('');
-  const [tinggiBadan, setTinggiBadan] = useState('');
-  const [beratBadan, setBeratBadan] = useState('');
+  const [tinggiBadan, setTinggiBadan] = useState(0);
+  const [beratBadan, setBeratBadan] = useState(0);
   const [deviceId, setDeviceId] = useState('');
 
   const [riwayatSakit, setRiwayatSakit] = useState('');
@@ -33,6 +35,21 @@ const FormProfile = () => {
 
   const [listRiwayatSakit, setListRiwayatSakit] = useState([]);
 
+  useEffect(() => {
+    if (action === 'edit' && profileData) {
+      // setEditedProfile(profileData);
+      setNamaLengkap(profileData.nama_lengkap)
+      setJenisKelamin(profileData.jenis_kelamin)
+      setTanggalLahir(profileData.tanggal_lahir)
+      setTinggiBadan(profileData.tinggi_badan.toString())
+      setBeratBadan(profileData.berat_badan.toString())
+      setDeviceId(profileData.device_id)
+      setListRiwayatSakit(profileData.riwayat)
+      console.log('profile data : ', profileData)
+    }
+    // console.log('profile data : ', profileData)
+
+  }, [action, profileData]);
 
   const handleSimpan = () => {
     // Lakukan aksi simpan data di sini
@@ -43,7 +60,7 @@ const FormProfile = () => {
   // }, [])
 
   const handleClickDatePicker = () => {
-    // Your function to run when the input is clicked
+    // Your function to run when tj he input is clicked
     setShowDatePicker(true);
     console.log(showDatePicker)
   };
@@ -77,7 +94,7 @@ const FormProfile = () => {
     // Create a Date object for the current date
     const currentDate = new Date();
     // Calculate the age in years
-    const age = currentDate.getFullYear() - birthdate.getFullYear();
+    let age = currentDate.getFullYear() - birthdate.getFullYear();
     // Check if the birthday has already occurred this year
     if (
       currentDate.getMonth() < birthdate.getMonth() ||
@@ -87,16 +104,46 @@ const FormProfile = () => {
       age--;
     }
     return age;
-  }
+  };
+
+  const countBBI = (tinggi_badan)=>{
+    return 0.9 * (Number(tinggi_badan) - 100);
+
+  };
+
+  const countKKB = (BBI,jenis_kelamin)=>{
+    if(jenis_kelamin=='Laki-Laki'){
+      return 30 * BBI;
+    }else{
+      return 25 * BBI;
+    }
+  };
+
+  const countKKarbo = (KKB)=>{
+    return 0.5 * KKB / 4;
+  };
+
+  const countKonsNasi = (KKarbo)=>{
+    console.log(KKarbo)
+
+    console.log(KKarbo * 2.5)
+    return KKarbo * 2.5;
+  };
+
 
   const addProfileData = async () => {
-    setLoading(true);
-    // console.log(profile)
+    // console.log(route.params)
     // return;
+    setLoading(true);
+    
     try {
       const akunJson = await AsyncStorage.getItem('akun');
       const akunValue = akunJson ? JSON.parse(akunJson) : [];
-      
+      // const umur = Number (countAge(tanggalLahir))
+      const BBI = countBBI(tinggiBadan)
+      const KKB = countKKB(BBI,jenisKelamin)
+      const KKarbo = countKKarbo(KKB)
+      const KonsNasi = countKonsNasi(KKarbo)
       const requestProfileData = {
         id_akun: akunValue.id_akun,
         nama_lengkap: namaLengkap,
@@ -106,6 +153,10 @@ const FormProfile = () => {
         tinggi_badan: tinggiBadan,
         umur: countAge(tanggalLahir),
         device_id: deviceId,
+        BBI : BBI,
+        KKB : KKB,
+        KKarbo: KKarbo,
+        KNasi : KonsNasi,
 
       };
       let requestRiwayatMedisData = {
@@ -148,6 +199,71 @@ const FormProfile = () => {
       console.error('Gagal menyimpan data profil:', error);
       alert(error);
 
+    }
+  };
+
+  const editProfileData = async () => {
+    setLoading(true);
+  
+    try {
+      const akunJson = await AsyncStorage.getItem('akun');
+      const akunValue = akunJson ? JSON.parse(akunJson) : [];
+      // const umur = Number (countAge(tanggalLahir))
+      const BBI = countBBI(tinggiBadan)
+      const KKB = countKKB(BBI,jenisKelamin)
+      const KKarbo = countKKarbo(KKB)
+      const KonsNasi = countKonsNasi(KKarbo)
+
+      const requestProfileData = {
+        id_akun: akunValue.id_akun,
+        nama_lengkap: namaLengkap,
+        jenis_kelamin: jenisKelamin,
+        tanggal_lahir: tanggalLahir,
+        berat_badan: beratBadan,
+        tinggi_badan: tinggiBadan,
+        umur: countAge(tanggalLahir),
+        device_id: deviceId,
+        BBI : BBI,
+        KKB : KKB,
+        KKarbo: KKarbo,
+        KNasi : KonsNasi,
+
+      };
+  
+      const profileIdToUpdate = profileData.id_profile
+      const profileRef = firestore().collection('profile').doc(profileIdToUpdate);
+      
+      await profileRef.update(requestProfileData);
+  
+      // If you want to update riwayat data, you can follow a similar approach here.
+      const riwayatMedisQuerySnapshot = await firestore()
+      .collection('riwayat_medis')
+      .where('id_profile', '==', profileIdToUpdate)
+      .get();
+
+      if (!riwayatMedisQuerySnapshot.empty) {
+        // Iterate through the matching documents and update each one
+        riwayatMedisQuerySnapshot.forEach(async (doc) => {
+          const updatedRiwayatData = {
+            // Update your riwayat data here.
+            // For example, you can update the 'riwayat' field.
+            riwayat: listRiwayatSakit, // Replace this with your updated data.
+          };
+          
+          // Update the riwayat_medis document
+          await doc.ref.update(updatedRiwayatData);
+        });
+      }
+
+  
+      setLoading(false);
+      Alert.alert('Success', 'Berhasil menyimpan perubahan data profile');
+      navigation.goBack(); // Go back to the previous screen after editing.
+  
+    } catch (error) {
+      setLoading(false);
+      console.error('Gagal menyimpan perubahan data profil:', error);
+      alert(error);
     }
   };
 
@@ -263,7 +379,7 @@ const FormProfile = () => {
           onChange={onChange}
         />
       )}
-      <ScrollView nestedScrollEnabled={true} style={{height:'50%',borderWidth:1,padding:1}}>
+      <ScrollView nestedScrollEnabled={true} style={{height:'45%',borderWidth:1,padding:1}}>
 
       <Input
         label="Tinggi Badan"
@@ -353,9 +469,15 @@ const FormProfile = () => {
       </ScrollView>
       {/* </View> */}
       <Card.Divider />
-
+    
       <Button title="Simpan" onPress={()=>{
-        addProfileData()
+         if (route.params.action === 'edit') {
+          console.log('edited')
+          editProfileData();
+        } else {
+          console.log('added')
+          addProfileData();
+        }
       }} />
       </Card>
     </View>

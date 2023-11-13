@@ -63,11 +63,40 @@ const RegisterPage4 = ({route}) => {
     }
     return age;
   }
+
+  const countBBI = (tinggi_badan)=>{
+    return 0.9 * (Number(tinggi_badan) - 100);
+
+  };
+
+  const countKKB = (BBI,jenis_kelamin)=>{
+    if(jenis_kelamin=='Laki-Laki'){
+      return 30 * BBI;
+    }else{
+      return 25 * BBI;
+    }
+  };
+
+  const countKKarbo = (KKB)=>{
+    return 0.5 * KKB / 4;
+  };
+
+  const countKonsNasi = (KKarbo)=>{
+    console.log(KKarbo)
+
+    console.log(KKarbo * 2.5)
+    return KKarbo * 2.5;
+  };
   const saveProfileData = async () => {
     setLoading(true);
     // console.log(profile)
     // return;
     try {
+      const BBI = countBBI(profile.tinggiBadan)
+      const KKB = countKKB(BBI,profile.jenisKelamin)
+      const KKarbo = countKKarbo(KKB)
+      const KonsNasi = countKonsNasi(KKarbo)
+
       const requestProfileData = {
         id_akun: profile.id_akun,
         nama_lengkap: profile.nama_lengkap,
@@ -77,6 +106,10 @@ const RegisterPage4 = ({route}) => {
         tinggi_badan: profile.tinggiBadan,
         umur: countAge(profile.tanggalLahir),
         device_id: '-',
+        BBI : BBI,
+        KKB : KKB,
+        KKarbo: KKarbo,
+        KNasi : KonsNasi,
 
       };
       let requestRiwayatMedisData = {

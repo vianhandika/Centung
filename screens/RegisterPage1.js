@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, Image, View, Pressable } from "react-native";
+import { Text, StyleSheet, Image, View, Pressable, Alert } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { CheckBox, Input, Icon,Dialog } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
@@ -163,6 +163,7 @@ const RegisterPage1 = ({}) => {
         </Pressable>
         <Pressable
           style={styles.loginSocialMedia}
+          onPress={() => Alert.alert('Under Development','Feature will be back soon')}
           // onPress={() => navigation.navigate("LoginPage")}
         >
           <View style={styles.googleChildPosition}>

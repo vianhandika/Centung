@@ -21,7 +21,11 @@ export const Color = {
   borderColor: "#f7f8f8",
   gray1: "#7b6f72",
   purp1: "#C58BF2",
-  gray3: "#f2f4f5"
+  gray3: "#f2f4f5",
+  palete1: "#F6F1F1",
+  palete2: "#AFD3E2",
+  palete3: "#19A7CE",
+  palete4:"#146C94"
 };
 /* Paddings */
 export const Padding = {

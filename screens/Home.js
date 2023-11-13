@@ -1,14 +1,17 @@
 // import * as React from "react";
 import React, { useState,useEffect } from "react";
 import { CheckBox, Input, Icon,Dialog,Avatar,ListItem,Button,Card } from "@rneui/themed";
-import { Text, StyleSheet, View, Pressable, Image, TouchableOpacity,ScrollView } from "react-native";
+import { Text, StyleSheet, View, Pressable, Image, TouchableOpacity,ScrollView,Alert } from "react-native";
 import { useNavigation,StackActions } from "@react-navigation/native";
 import { FontSize, FontFamily, Color, Padding, Border } from "../GlobalStyles";
 import auth from '@react-native-firebase/auth';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {setCurrentUser} from "../helper/AsyncStorageHelper"
+import {setCurrentUser,signOut1} from "../helper/AsyncStorageHelper"
 import AgendaCalendar from "../components/AgendaCalendar"
 import LineChartLog from "../components/LineChart"
+import AdviceProfile from "../components/AdviceProfile"
+import firestore from '@react-native-firebase/firestore';
+
 
 
 import DropDownPicker from "react-native-dropdown-picker";
@@ -21,44 +24,9 @@ const Home = ({}) => {
   const [selectedProfileObj, setselectedProfileObj] = useState(); 
 
   const [labelOpen, setLabelOpen] = useState(false);
-  const [listProfile, setlistProfile] = useState([
-    {
-      nama_lengkap: 'Profile 1',
-      id_akun: 'Profile1',
-      icon: () => <Icon
-              name="face-woman-outline" // Replace with the name of your desired icon
-              type="material-community"
-              size={25}
-              color="black" // Customize the icon color
-            />,
-    },
-    {
-      nama_lengkap: 'Profile 2',
-      id_akun: 'Profile2',
-      icon: () => <Icon
-              name="face-woman-outline" // Replace with the name of your desired icon
-              type="material-community"
-              size={25}
-              color="black" // Customize the icon color
-            />,
-    },
-    {
-      nama_lengkap: 'Profile 3',
-      id_akun: 'Profile3',
-      icon: () => <Icon
-              name="face-woman-outline" // Replace with the name of your desired icon
-              type="material-community"
-              size={25}
-              color="black" // Customize the icon color
-            />,
-    },
-  ]);
+  const [listProfile, setlistProfile] = useState([]);
 
   const toogleOpen = () => {
-    // if(value){
-    //   setselectedProfile(value)
-    // }
-    // console.log(listProfile)
     setLabelOpen(!labelOpen);
   };
 
@@ -73,17 +41,7 @@ const Home = ({}) => {
       const selectedProfileValue = selectedProfileJson ? JSON.parse(selectedProfileJson) : [];
       setlistProfile(listProfileValue.listProfile)  
       setselectedProfileObj(selectedProfileValue)
-      // if (listProfileJson) {
-      //   const listProfileValue = JSON.parse(listProfileJson);
-      //   setlistProfile(listProfileValue);
-      //   console.log('listProfileValue :', listProfileJson);
-
-      //   console.log('listProfileValue type:', typeof listProfileValue);
-      //   setLoading(false);
-      // } else {
-      //   console.log('listProfileJson is null or undefined');
-      // }
-      // Loading is complete, set isLoading to false
+      console.log('listProfileValue :', selectedProfileValue);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -94,83 +52,54 @@ const Home = ({}) => {
   useEffect(() => {
     console.log('visit home')
     // setLoading(true);
-    // Simulate an async operation (e.g., API call, data fetching)
-    
-    // Call the asynchronous function
     fetchUserData();
-    // setselectedProfile(listProfile[0].value); // NEED CHANGE (LOAD ASYNC)
   
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // Check if the current route is "ScreenA"
       if (navigation.isFocused()) {
-        // Trigger the refresh function
         fetchUserData();
       }
     });
 
-    // Clean up the listener when the component unmounts
     return unsubscribe;
   }, [navigation]);
   
-  // const setData = async () => {
-  //   try {
-  //     const listProfileJson = await AsyncStorage.getItem('listProfile');
-  //     // const listProfileValue = listProfileJson ? JSON.parse(listProfileJson) : [];
-  //     const listProfileValue =  listProfileJson ? JSON.parse(listProfileJson) : [];
-  //     if (listProfileValue.length > 0) {
-  //       // console.log('listProfile:', listProfile);
-  //       setlistProfile(listProfileValue)  
   
-  //     }
-        
-
-  //     // Loading is complete, set isLoading to false
-  //     // setLoading(false);
-  //   } catch (error) {
-  //     console.error('Error fetching data2:', error);
-  //     // setLoading(false); // Set isLoading to false on error as well
-  //   }
-  // };
-
   useEffect(() => {
     // Check if listProfile is defined before mapping over it
     // setData()
-    // setselectedProfile(listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
-    // setselectedProfileObj(listProfile[0]); // NEED CHANGE (LOAD ASYNC)
+    // console.log('list Profile (selected): ===================', listProfile[0])
+    // console.log('selected Profile (selected): ', selectedProfileObj.nama_lengkap)
+    // console.log('selected Profile (selected): ', selectedProfileObj)
 
+    if((selectedProfileObj== undefined || selectedProfileObj.length==0 ) && (selectedProfileObj== undefined || selectedProfileObj.nama_lengkap == undefined)){
+      // console.log('true ========================================')
+      // console.log(selectedProfileObj.nama_lengkap
+      setselectedProfileObj(listProfile[0])
+      // console.log(selectedProfileObj.nama_lengkap)
+    }else{
+      // console.log('false ========================================')
+      setselectedProfile(selectedProfileObj && selectedProfileObj.nama_lengkap != undefined?selectedProfileObj.nama_lengkap:listProfile[0].nama_lengkap); // NEED CHANGE (LOAD ASYNC)
+      setselectedProfileObj(selectedProfileObj != undefined?selectedProfileObj : listProfile[0] )
+      // console.log(selectedProfileObj.nama_lengkap)
 
-    
+    }
 
-  }, [listProfile]);
-
-  useEffect(() => {
-    // Check if listProfile is defined before mapping over it
-    // setData()
-    setselectedProfile(selectedProfileObj && selectedProfileObj.nama_lengkap !== undefined?selectedProfileObj.nama_lengkap:'user'); // NEED CHANGE (LOAD ASYNC)
-    // setselectedProfileObj(listProfile[0]); // NEED CHANGE (LOAD ASYNC)
-    // console.log(selectedProfileObj)
-
+    // console.log('Nama Profile : ', selectedProfileObj.nama_lengkap)
+    // console.log('Nama  : ',listProfile[0].nama_lengkap)
     
 
   }, [selectedProfileObj]);
 
+  useEffect(() => {
+  
+
+  }, [listProfile]);
+
   const signOut = async () => {
-    // const jsonValue = await AsyncStorage.getItem('listProfile');
-    // const test =  !null ? JSON.parse(jsonValue) : null;
-    // console.log(test)
-    // navigation.replace("NonSecureStack");
-    // navigation.replace("NonSecureStack");
-    // navigation.navigate("NonSecureStack")
-    // navigation.dispatch(StackActions.replace("NonSecureStack"))
-
-
-
-    // navigation.replace("NonSecureStack");
-
-    
+    // signOut1()
     await AsyncStorage.clear();
     await auth()
     .signOut()
@@ -181,6 +110,66 @@ const Home = ({}) => {
   
   }
 
+  const deleteProfile = async(profile) => {
+    try {
+      // console.log(profile)
+      setLoading(true)
+      // return''
+      // First, delete the associated riwayat_medis document (if it exists).
+      if(listProfile.length==1){
+        Alert.alert('Gagal Menghapus', 'Akun minimal memiliki 1 profile');
+        setLoading(false)
+        toogleOpen()
+      }else{
+        const riwayatMedisRef = firestore()
+          .collection('riwayat_medis')
+          .where('id_profile', '==', profile.id_profile);
+
+        const snapshot = await riwayatMedisRef.get();
+
+        if (!snapshot.empty) {
+          const riwayatMedisDoc = snapshot.docs[0]; // Assuming only one riwayat_medis document per profile.
+          await riwayatMedisDoc.ref.delete();
+          console.log('Riwayat deleted successfully.');
+
+        }
+
+        if(profile.device_id){
+          const logCentungRef = firestore()
+          .collection('log_centung')
+          .where('device_id', '==', profile.device_id);
+    
+          const logSnapshot = await logCentungRef.get();
+      
+          if (!logSnapshot.empty) {
+            for (const logDoc of logSnapshot.docs) {
+              await logDoc.ref.delete();
+            }
+            console.log('Log deleted successfully.');
+
+          }
+        }
+        // Delete the associated "log_centung" documents by device_id.
+        
+        const profileRef = firestore().collection('profile').doc(profile.id_profile);
+        await profileRef.delete();
+        console.log('Profile deleted successfully.');
+        Alert.alert('Success', 'Berhasil menghapus data profile');
+
+        fetchUserData();
+
+        setLoading(false)
+        toogleOpen()
+      }
+
+    } catch (error) {
+      console.error('Error deleting profile:', error);
+      setLoading(false)
+      toogleOpen()
+
+    }
+  }
+
   function getInitials(name) {
     const words = name.split(' ');
     const initials = words.map((word) => word.charAt(0).toUpperCase());
@@ -189,6 +178,7 @@ const Home = ({}) => {
 
   // function selectProfile(profile) {
   const selectProfile = async (profile) => {
+    console.log('selected : ',profile)
     setselectedProfile(profile.nama_lengkap)
     setselectedProfileObj(profile)
     const data = JSON.stringify(profile);
@@ -196,6 +186,7 @@ const Home = ({}) => {
 
     // return
   }
+
 
   if(loading){
     return(
@@ -224,24 +215,11 @@ const Home = ({}) => {
         titleStyle={{color:'black'}} 
         title="Pilih Profile"/>
         <Card.Divider/>
-        {/* <View style={{width:'100%',height:200,backgroundColor:'red'}}> */}
         <ScrollView 
         // style={{ width: '100%', height: 200, backgroundColor: 'red' }}
         >
         {listProfile.length > 0 ? (listProfile.map((l, i) => (
-          // <TouchableOpacity 
-          //   key={i}
-          //   style={[{
-          //   // marginRight: 10
-          //   }]}
-          //   onPress={() => {
-          //     selectProfile(l.nama_lengkap);
-          //     toogleOpen();
-          //     }}
-          //   // onPress={[setselectedProfile(l.value),toogleOpen]}
-          //   >
-          
-          // <ListItem.Swipeable
+         
           <ListItem
 
             key={i}
@@ -251,23 +229,6 @@ const Home = ({}) => {
               // backgroundColor:'yellow'
             }}
             pad={5}
-            
-            // style={[styles.itemSwipe]}
-            // rightContent={(reset) => (
-            //   <Button
-            //     title="Delete"
-            //     onPress={() => {
-            //       reset();
-            //       // Handle deletion of the item at index
-            //       // const updatedList = [...listRiwayatSakit];
-            //       // updatedList.splice(index, 1);
-            //       // setListRiwayatSakit(updatedList);
-            //     }}
-            //     icon={{ name: 'delete', color: 'white' }}
-            //     buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
-            //   />
-            // )}
-            // onPress={toogleOpen(l.value)}
             onPress={()=> {
               // setselectedProfile(l.nama_lengkap);
               // setselectedProfileObj(l);
@@ -275,8 +236,6 @@ const Home = ({}) => {
               toogleOpen();
             }}
           >
-            {/* <Avatar rounded source={{ uri: l.avatar_url }} /> */}
-
            
             <Avatar
               // size={64}
@@ -289,13 +248,17 @@ const Home = ({}) => {
                 {l.nama_lengkap}
               </ListItem.Title>
               
-              {/* <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle> */}
+              <ListItem.Subtitle style={{fontSize:10}}>{l.device_id?'device id : '+ l.device_id:'device id : '+ '-'}</ListItem.Subtitle>
             </ListItem.Content>
             <TouchableOpacity
                 // style={{height:"100%"}}
-                onPress={() => console.log('edit')}
-                // onPress={signOut}
+                onPress={() => {
+                  console.log('edit')
+                  toogleOpen()
+                  navigation.push('FormProfile', { action: 'edit', profileData: l })
 
+                }}
+                // onPress={signOut}
               >
                 <View 
                 // style={styles.iconContainer}
@@ -315,7 +278,10 @@ const Home = ({}) => {
                 // style={styles.notification}
                 // onPress={() => navigation.navigate("WelcomeScreen2")}
                 // onPress={signOut}
-                onPress={() => console.log('delete')}
+                onPress={() => {
+                  deleteProfile(l)
+                  console.log('delete')
+                }}
 
               >
                 <View 
@@ -365,7 +331,11 @@ const Home = ({}) => {
             title='Tambah Profile'
             onPress={()=>{
               toogleOpen()
-              navigation.push('FormProfile')
+              // navigation.push('FormProfile', { action: 'edit', profileData: selectedProfileObj })
+              navigation.push('FormProfile', { action: 'add'})
+
+              // navigation.push('FormProfile')
+
             }}
             // buttonStyle={styles.button}
           />
@@ -449,11 +419,21 @@ const Home = ({}) => {
       </View>
       <View style={[
       {width:"95%",height:"83%",
-      marginHorizontal:10,left:0,
-      top:110,position:"absolute"
+      marginHorizontal:5,left:0,
+      top:110,position:"absolute",
+      
       }]}>
-        {/* <AgendaCalendar/> */}
-       {/* <LineChartLog/> */}
+        
+        {/* {(selectedProfileObj!= undefined && selectedProfileObj.length!=0 )? (
+          <AgendaCalendar data={selectedProfileObj}/>
+        ) : (<></>) } */}
+        {/* {(selectedProfileObj!= undefined && selectedProfileObj.length!=0 )? (
+          <LineChartLog data={selectedProfileObj}/>
+        ) : (<></>) } */}
+       {(selectedProfileObj!= undefined && selectedProfileObj.length!=0 )? (
+        <AdviceProfile data={selectedProfileObj} />
+        ) : (<></>) }
+      {/* <AdviceProfile data={selectedProfileObj} /> */}
        
       </View>
     </View>

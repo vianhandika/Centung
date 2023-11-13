@@ -1,0 +1,25 @@
+log =[
+    {berat_nasi : 200, timestamp:'September 28, 2023 at 7:08:00 PM UTC+7'},
+    {berat_nasi : 250, timestamp:'September 28, 2023 at 8:08:00 PM UTC+7'},
+    {berat_nasi : 300, timestamp:'September 29, 2023 at 1:08:00 PM UTC+7'},
+]
+
+output = {
+    '2023-09-28': [
+                    { description: 200, time: '7:08:00 PM'},
+                    { description: 200, time: '8:08:00 PM'}
+                  ],
+    '2023-09-29': [{ description: 300, time: '1:08:00 PM'}],
+}
+
+data =[
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,450,300,0,
+]
+
+listMonth=[
+{label: 'Agustus',value:8},
+{label: 'September',value:9},
+{label: 'Oktober',value:10},
+]

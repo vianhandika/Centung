@@ -162,7 +162,7 @@ const LoginPage = () => {
         </View>
         <Pressable
           style={[styles.loginSocialMedia, styles.btnFlexBox]}
-          onPress={() => navigation.navigate("WelcomeScreen2")}
+          onPress={() => Alert.alert('Under Development','Feature will be back soon')}
         >
           <View style={[styles.googleBtn, styles.btnFlexBox]}>
             <Image
@@ -216,11 +216,11 @@ const LoginPage = () => {
         />
         <Pressable
           style={styles.lupaPassBtn}
-          onPress={() => navigation.navigate("WelcomeScreen2")}
+         onPress={() => Alert.alert('Under Development','Feature will be back soon')}
         >
           <Pressable
             style={styles.loginBtnChildPosition}
-            onPress={() => navigation.navigate("WelcomeScreen2")}
+           onPress={() => Alert.alert('Under Development','Feature will be back soon')}
           >
             <Text style={[styles.lupaPassword, styles.daftarTypo]}>
               Lupa Password ?
