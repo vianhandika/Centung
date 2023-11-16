@@ -42,7 +42,7 @@ const LoginPage = () => {
     await auth()
     .signInWithEmailAndPassword(email, password)
     .then(async response => {
-      console.log(response);
+      // console.log(response);
       // // alert('Sign in Success');
       // await setCurrentUser();
 
@@ -100,7 +100,8 @@ const LoginPage = () => {
     })
     .catch(error => {
       setLoading(false);
-      console.error(error);
+      alert("Username & Password Salah")
+      // console.error(error);
     });
     }
     // try{
@@ -160,7 +161,7 @@ const LoginPage = () => {
             source={require("../assets/vector-68.png")}
           />
         </View>
-        <Pressable
+        {/* <Pressable
           style={[styles.loginSocialMedia, styles.btnFlexBox]}
           onPress={() => Alert.alert('Under Development','Feature will be back soon')}
         >
@@ -171,7 +172,7 @@ const LoginPage = () => {
               source={require("../assets/googlelogopngsuiteeverythingyouneedknowaboutgooglenewest0-2.png")}
             />
           </View>
-        </Pressable>
+        </Pressable> */}
         <Pressable
           style={[styles.registerPageBtn, styles.btnFlexBox]}
           onPress={() => navigation.navigate("WelcomeScreen2")}
@@ -214,7 +215,7 @@ const LoginPage = () => {
           onChangeText={(text)=>setPassword(text)}
           value={password}
         />
-        <Pressable
+        {/* <Pressable
           style={styles.lupaPassBtn}
          onPress={() => Alert.alert('Under Development','Feature will be back soon')}
         >
@@ -226,7 +227,7 @@ const LoginPage = () => {
               Lupa Password ?
             </Text>
           </Pressable>
-        </Pressable>
+        </Pressable> */}
         <View style={[styles.titleSection, styles.titleSectionPosition]}>
           <Text style={[styles.halo, styles.haloTypo]}>Halo</Text>
           <Text style={[styles.selamatDatang, styles.titleSectionPosition]}>

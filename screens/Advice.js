@@ -41,7 +41,7 @@ const Advice = ({}) => {
       const selectedProfileValue = selectedProfileJson ? JSON.parse(selectedProfileJson) : [];
       setlistProfile(listProfileValue.listProfile)  
       setselectedProfileObj(selectedProfileValue)
-      console.log('listProfileValue :', selectedProfileValue);
+      // console.log('listProfileValue :', selectedProfileValue);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -50,7 +50,7 @@ const Advice = ({}) => {
   };
 
   useEffect(() => {
-    console.log('visit home')
+    // console.log('visit home')
     // setLoading(true);
     fetchUserData();
     Alert.alert('Under Development','Feature will be back soon')
@@ -105,7 +105,7 @@ const Advice = ({}) => {
     await auth()
     .signOut()
     .then(() => {
-      console.log('User signed out!')
+      // console.log('User signed out!')
       navigation.replace("NonSecureStack");
     });
   
@@ -131,7 +131,7 @@ const Advice = ({}) => {
         if (!snapshot.empty) {
           const riwayatMedisDoc = snapshot.docs[0]; // Assuming only one riwayat_medis document per profile.
           await riwayatMedisDoc.ref.delete();
-          console.log('Riwayat deleted successfully.');
+          // console.log('Riwayat deleted successfully.');
 
         }
 
@@ -146,7 +146,7 @@ const Advice = ({}) => {
             for (const logDoc of logSnapshot.docs) {
               await logDoc.ref.delete();
             }
-            console.log('Log deleted successfully.');
+            // console.log('Log deleted successfully.');
 
           }
         }
@@ -179,7 +179,7 @@ const Advice = ({}) => {
 
   // function selectProfile(profile) {
   const selectProfile = async (profile) => {
-    console.log('selected : ',profile)
+    // console.log('selected : ',profile)
     setselectedProfile(profile.nama_lengkap)
     setselectedProfileObj(profile)
     const data = JSON.stringify(profile);
@@ -254,7 +254,7 @@ const Advice = ({}) => {
             <TouchableOpacity
                 // style={{height:"100%"}}
                 onPress={() => {
-                  console.log('edit')
+                  // console.log('edit')
                   toogleOpen()
                   navigation.push('FormProfile', { action: 'edit', profileData: l })
 
@@ -281,7 +281,7 @@ const Advice = ({}) => {
                 // onPress={signOut}
                 onPress={() => {
                   deleteProfile(l)
-                  console.log('delete')
+                  // console.log('delete')
                 }}
 
               >

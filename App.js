@@ -282,7 +282,7 @@ const App = () => {
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
-    console.log(user);
+    // console.log(user);
     
     if(user){
       setIsUser(true);
@@ -319,17 +319,17 @@ const App = () => {
                 if (hasProfile === true) {
                   setPassProfile(true)
                   setnonProfile(false)
-                  console.log('Profil dengan hasprofile=true ditemukan untuk email:', email);
+                  // console.log('Profil dengan hasprofile=true ditemukan untuk email:', email);
                 } else {
                   setPassProfile(false)
                   setnonProfile(true)
 
-                  console.log('Profil dengan hasprofile=false ditemukan untuk email:', email);
+                  // console.log('Profil dengan hasprofile=false ditemukan untuk email:', email);
                  
                 }
               
             } else {
-              console.log(email,' Tidak ada data dengan email yang cocok.');
+              // console.log(email,' Tidak ada data dengan email yang cocok.');
               setPassProfile(false)
               setnonProfile(true)
 
@@ -342,7 +342,7 @@ const App = () => {
       //   // setIsUser(false);
       //   // setisNonUser(true);
       // }
-      console.log('isuser: ',isUser,' isnotuser: ',isNonUser,' passprofile: ', passProfile, ' notpassprofile: ', nonProfile);
+      // console.log('isuser: ',isUser,' isnotuser: ',isNonUser,' passprofile: ', passProfile, ' notpassprofile: ', nonProfile);
       // else if (user) {
         
       //   const email = user.email;

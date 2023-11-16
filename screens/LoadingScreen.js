@@ -6,7 +6,7 @@ import { Text, Button, Overlay, CheckBox, Input, Icon,Dialog } from "@rneui/them
 
 function LoadingScreen({ isVisible }) {
   useEffect(() => {
-    console.log('visit home')
+    // console.log('visit home')
   })
   // const { theme } = useTheme();
   const [loading, setLoading] = useState(true);

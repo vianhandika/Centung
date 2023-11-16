@@ -76,7 +76,7 @@ const AdviceProfile = ({data}) => {
       // Get the timestamp for the start and end of today
       const startOfDayTimestamp = firestore.Timestamp.fromDate(today);
       const endOfDayTimestamp = firestore.Timestamp.fromDate(endToday);
-      console.log(startOfDayTimestamp.toDate().toLocaleString(),endOfDayTimestamp.toDate().toLocaleString())
+      // console.log(startOfDayTimestamp.toDate().toLocaleString(),endOfDayTimestamp.toDate().toLocaleString())
       const logCentungRef = firestore().collection('log_centung');
 
       // Query log_centung collection for timestamps within today
@@ -101,11 +101,11 @@ const AdviceProfile = ({data}) => {
       setKKarboNow(sumNasi*0.4)
       
 
-      console.log('Sum Nasi for today:', sumNasi);
-      console.log('Sum Kal for today:', sumNasi*1);
-      console.log('Sum Karbo for today:', sumNasi*0.4);
+      // console.log('Sum Nasi for today:', sumNasi);
+      // console.log('Sum Kal for today:', sumNasi*1);
+      // console.log('Sum Karbo for today:', sumNasi*0.4);
 
-      console.log('Log data for today:', logData);
+      // console.log('Log data for today:', logData);
 
       // return logData;
     } catch (error) {
@@ -116,7 +116,7 @@ const AdviceProfile = ({data}) => {
 
   useEffect(() => {
     if (profileData) {
-      console.log('profile data : ', profileData)
+      // console.log('profile data : ', profileData)
       
       setNamaLengkap(profileData.nama_lengkap)
       setJenisKelamin(profileData.jenis_kelamin)

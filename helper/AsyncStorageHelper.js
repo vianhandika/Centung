@@ -30,7 +30,7 @@ async function setCurrentUser() {
         ...akun,
       }));
     } else {
-      console.log('Tidak ada data akun yang cocok.');
+      // console.log('Tidak ada data akun yang cocok.');
     }
 
     // Read & store profile
@@ -62,18 +62,18 @@ async function setCurrentUser() {
     });
     // console.log('async :', listProfile[0].riwayat)
     await AsyncStorage.setItem('listProfile', JSON.stringify({ listProfile }));
-    console.log('async :', listProfile[0].riwayat)
+    // console.log('async :', listProfile[0].riwayat)
 
     const selectedProfileJson = await AsyncStorage.getItem('selectedProfile');
     if(selectedProfileJson){
       const selectedProfileValue = JSON.parse(selectedProfileJson)
       const foundProfile = listProfile.find((profile) => profile.id_profile === selectedProfileValue.id_profile);
       if (foundProfile) {
-        console.log("Found Profile:", foundProfile);
+        // console.log("Found Profile:", foundProfile);
         const data = JSON.stringify(foundProfile);
         await AsyncStorage.setItem('selectedProfile', data);
       } else {
-        console.log("Profile not found.");
+        // console.log("Profile not found.");
         const data = JSON.stringify(listProfile[0]);
         await AsyncStorage.setItem('selectedProfile', data);
       }
@@ -138,7 +138,7 @@ async function setCurrentUser() {
 
     // }
 
-    console.log('AsyncStorage updated successfully.');
+    // console.log('AsyncStorage updated successfully.');
   } catch (error) {
     console.error('Error updating AsyncStorage:', error);
   }
@@ -151,7 +151,7 @@ const signOut1 = async () => {
   await auth()
   .signOut()
   .then(() => {
-    console.log('User signed out!')
+    // console.log('User signed out!')
     navigation.replace("NonSecureStack");
   });
 

@@ -82,9 +82,9 @@ const RegisterPage4 = ({route}) => {
   };
 
   const countKonsNasi = (KKarbo)=>{
-    console.log(KKarbo)
+    // console.log(KKarbo)
 
-    console.log(KKarbo * 2.5)
+    // console.log(KKarbo * 2.5)
     return KKarbo * 2.5;
   };
   const saveProfileData = async () => {
@@ -116,12 +116,12 @@ const RegisterPage4 = ({route}) => {
         id_profile: '-', // ID profil akan diisi setelah data profil ditambahkan
         riwayat: listRiwayatSakit,
       };
-      console.log(requestProfileData)
-      console.log(requestRiwayatMedisData)
+      // console.log(requestProfileData)
+      // console.log(requestRiwayatMedisData)
 
       const profileRef = firestore().collection('profile');
       const docRef = await profileRef.add(requestProfileData);
-      console.log('Data profil berhasil disimpan di Firestore dengan ID:', docRef.id);
+      // console.log('Data profil berhasil disimpan di Firestore dengan ID:', docRef.id);
       requestRiwayatMedisData.id_profile = docRef.id;
 
       const riwayatMedisRef = firestore().collection('riwayat_medis');
@@ -129,7 +129,7 @@ const RegisterPage4 = ({route}) => {
 
       const akunRef = firestore().collection('akun');
       akunRef.doc(profile.id_akun).update({hasprofile:true}).then(() => {
-        console.log('Document updated successfully!');
+        // console.log('Document updated successfully!');
       })
       .catch((error) => {
         console.error('Error updating document:', error);
@@ -138,8 +138,8 @@ const RegisterPage4 = ({route}) => {
 
       setLoading(false);
       // navigation.navigate("SuccessRegistration",profile);
-      console.log('profile from reg4');
-      console.log(profile);
+      // console.log('profile from reg4');
+      // console.log(profile);
 
       navigation.navigate('SuccessRegistration',profile)
       // navigation.replace('SecureStack')
@@ -160,23 +160,23 @@ const RegisterPage4 = ({route}) => {
   const  getFormRegisterStorage = async ()=>{
     const jsonValue = await AsyncStorage.getItem('formRegister');
     const test =  !null ? JSON.parse(jsonValue) : null;
-    console.log('route params reg4')
-    console.log(route.params)
+    // console.log('route params reg4')
+    // console.log(route.params)
 
-    console.log('getting from storage reg4')
+    // console.log('getting from storage reg4')
 
     // console.log('getting from storage reg4')
     if(!route.params){
-        console.log('from async storage')
+        // console.log('from async storage')
 
       // profile = test
       setProfile(test);
-      console.log(profile)
+      // console.log(profile)
       // setNamaLengkap(profile.nama_lengkap);
 
     }else{
       // setNamaLengkap('User')
-      console.log('from route')
+      // console.log('from route')
 
       setProfile(route.params);
 
@@ -192,7 +192,7 @@ const RegisterPage4 = ({route}) => {
     return true;
   };
   useEffect(() => {
-    console.log('visit reg4')
+    // console.log('visit reg4')
   
     getFormRegisterStorage();
    
@@ -200,7 +200,7 @@ const RegisterPage4 = ({route}) => {
   }, []);
 
   const test = () => {
-    console.log(profile)
+    // console.log(profile)
     
   };
 

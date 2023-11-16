@@ -27,11 +27,11 @@ const WelcomeScreen2 = ({navigation}) => {
     // checkProfileExists(auth().currentUser)
     // const [passProfile2, setPassProfile2] = useState(false);
     // setPassProfile(true)
-    console.log(' passprofile3: ', passProfile);
+    // console.log(' passprofile3: ', passProfile);
 
     const user = auth().currentUser
     if(user){
-      console.log(user)
+      // console.log(user)
       // setPassProfile(true)
       setIsUser(true)
       checkProfileExists(user)
@@ -75,22 +75,22 @@ const WelcomeScreen2 = ({navigation}) => {
                 const hasProfile =  querySnapshot.docs[0].data().hasprofile; 
                 if (hasProfile === true) {
                   setPassProfile(true)
-                  console.log(' passprofile2: ', passProfile);
+                  // console.log(' passprofile2: ', passProfile);
                   setIsLoading(false)
                   
                   // setnonProfile(false)
-                  console.log('Profil dengan hasprofile=true ditemukan untuk email:', email);
+                  // console.log('Profil dengan hasprofile=true ditemukan untuk email:', email);
                 } else {
                   setPassProfile(false)
                   // setnonProfile(true)
                   setIsLoading(false)
 
-                  console.log('Profil dengan hasprofile=false ditemukan untuk email:', email);
+                  // console.log('Profil dengan hasprofile=false ditemukan untuk email:', email);
                  
                 }
               
             } else {
-              console.log(email,' Tidak ada data dengan email yang cocok.');
+              // console.log(email,' Tidak ada data dengan email yang cocok.');
               setPassProfile(false)
               setIsLoading(false)
               // setnonProfile(true)
@@ -101,7 +101,7 @@ const WelcomeScreen2 = ({navigation}) => {
         }
   
       // console.log('isuser: ',isUser,' isnotuser: ',isNonUser,' passprofile: ', passProfile, ' notpassprofile: ', nonProfile);
-      console.log(' passprofile: ', passProfile);
+      // console.log(' passprofile: ', passProfile);
       
      
     } catch (error) {

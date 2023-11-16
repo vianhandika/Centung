@@ -31,11 +31,11 @@ const RegisterPage1 = ({}) => {
     setLoading(true);
     // return;
     try {
-      console.log({nama_lengkap, no_telp, email, password})
+      // console.log({nama_lengkap, no_telp, email, password})
       const response = await auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async() => {
-        console.log('User account created & signed in!');
+        // console.log('User account created & signed in!');
         
         const akunRef = firestore().collection('akun');
         const akunDoc = await akunRef.add({
@@ -46,7 +46,7 @@ const RegisterPage1 = ({}) => {
           created_at :new Date(),
         });
         const id_akun = akunDoc.id;
-        console.log('Akun berhasil ditambahkan dengan ID:', akunDoc.id);
+        // console.log('Akun berhasil ditambahkan dengan ID:', akunDoc.id);
         
 
         const formRegister = JSON.stringify({
@@ -60,8 +60,8 @@ const RegisterPage1 = ({}) => {
         await AsyncStorage.setItem('formRegister', formRegister);
         const jsonValue = await AsyncStorage.getItem('formRegister');
         const test =  !null ? JSON.parse(jsonValue) : null;
-        console.log('succes store storage reg1')
-        console.log(test)
+        // console.log('succes store storage reg1')
+        // console.log(test)
         setLoading(false);
         navigation.replace("SecureStack2",{id_akun,nama_lengkap,no_telp,email,password})
 
@@ -74,13 +74,13 @@ const RegisterPage1 = ({}) => {
         setLoading(false);
 
         if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
+          // console.log('That email address is already in use!');
           alert('That email address is already in use!');
 
         }
     
         else if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
+          // console.log('That email address is invalid!');
           alert('That email address is invalid!');
 
         }
@@ -91,7 +91,7 @@ const RegisterPage1 = ({}) => {
         // console.error(error);
 
       });
-      console.log(response)
+      // console.log(response)
     } catch (error) {
       setLoading(false);
       console.error('Gagal menambahkan akun:', error);
@@ -161,7 +161,7 @@ const RegisterPage1 = ({}) => {
             <Text style={[styles.daftar, styles.daftarTypo]}>Daftar</Text>
           }
         </Pressable>
-        <Pressable
+        {/* <Pressable
           style={styles.loginSocialMedia}
           onPress={() => Alert.alert('Under Development','Feature will be back soon')}
           // onPress={() => navigation.navigate("LoginPage")}
@@ -174,7 +174,7 @@ const RegisterPage1 = ({}) => {
               source={require("../assets/googlelogopngsuiteeverythingyouneedknowaboutgooglenewest0-21.png")}
             />
           </View>
-        </Pressable>
+        </Pressable> */}
       </View>
       <View style={[styles.labelSectionWrapper, styles.labelLayout]}>
         <View style={[styles.labelSection, styles.labelLayout]}>

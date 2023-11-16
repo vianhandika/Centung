@@ -68,7 +68,7 @@ const AgendaCalendar = ({data}) => {
       // Add the log entry to the corresponding date in the output
       output[formattedDate].push(logEntry);
     }
-    console.log(output);
+    // console.log(output);
 
     return output;
   }
@@ -102,7 +102,7 @@ const AgendaCalendar = ({data}) => {
   }
   const getLogCentung = async (data) => {
     try {
-      console.log(data.device_id)
+      // console.log(data.device_id)
       const logRef = firestore().collection('log_centung');
       const logQuery = logRef.where('device_id', '==', data.device_id).orderBy('timestamp', 'asc');
       const logSnapshot = await logQuery.get();
@@ -116,12 +116,12 @@ const AgendaCalendar = ({data}) => {
           const docId = doc.id;
           logData.push({...data,docId,initialTimestamp : firestoreTimestampToFormattedString(doc.data().timestamp)});
         });
-        console.log('Log data for device ID:',logData);
+        // console.log('Log data for device ID:',logData);
         setAgendaData(getFormatedAgenda(logData))
       } else {
-      console.log(logSnapshot)
+      // console.log(logSnapshot)
 
-        console.log('No log data found for the specified device ID.');
+        // console.log('No log data found for the specified device ID.');
         setAgendaData({})
 
       }
@@ -133,8 +133,9 @@ const AgendaCalendar = ({data}) => {
   }
   const deleteLogCentung = async (data) => {
     try {
-      console.log(data.docId)
+      // console.log(data.docId)
       setLoading(true)
+      setAgendaData(null)
       const logRef = firestore().collection('log_centung');
     // const docIdToDelete = 'your_document_id_here'; // Replace with the actual document ID to delete
 
@@ -151,7 +152,7 @@ const AgendaCalendar = ({data}) => {
   }
   useEffect(() => {
     if (profileData) {
-      console.log('profile data : ', profileData)
+      // console.log('profile data : ', profileData)
       getLogCentung(profileData)
 
     }
@@ -230,7 +231,7 @@ const AgendaCalendar = ({data}) => {
                     '',
                     'Are you sure you want to delete?',  
                     [
-                      {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                      {text: 'Cancel', onPress: () => {}, style: 'cancel'},
                       {text: 'OK', onPress: () => {
                         // console.log(agendaData)
                         // console.log(item)

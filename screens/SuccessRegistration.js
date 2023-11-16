@@ -36,22 +36,22 @@ const SuccessRegistration = ({route}) => {
     return true;
   };
   useEffect(() => {
-    console.log('visit succpage')
+    // console.log('visit succpage')
   
     const  getFormRegisterStorage = async ()=>{
       const jsonValue = await AsyncStorage.getItem('formRegister');
       const test =  !null ? JSON.parse(jsonValue) : null;
-      console.log('getting from storage succ')
+      // console.log('getting from storage succ')
       if(!route.params){
         // profile = test
-        console.log('from async storage')
+        // console.log('from async storage')
 
         setProfile(test)
 
         setNamaLengkap(profile.nama_lengkap);
       }else{
         // setNamaLengkap('User');
-        console.log('from route')
+        // console.log('from route')
 
         setProfile(route.params)
         setNamaLengkap(profile.nama_lengkap);
@@ -81,10 +81,10 @@ const SuccessRegistration = ({route}) => {
       }
     });
   }, []);
-  console.log(profile)
+  // console.log(profile)
   const navigation = useNavigation();
   const test = ()=>{
-    console.log(profile)
+    // console.log(profile)
   }
   return (
     <View style={styles.successRegistration}>

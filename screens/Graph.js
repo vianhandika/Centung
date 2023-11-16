@@ -41,7 +41,7 @@ const Graph = ({}) => {
       const selectedProfileValue = selectedProfileJson ? JSON.parse(selectedProfileJson) : [];
       setlistProfile(listProfileValue.listProfile)  
       setselectedProfileObj(selectedProfileValue)
-      console.log('listProfileValue :', selectedProfileValue);
+      // console.log('listProfileValue :', selectedProfileValue);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -50,7 +50,7 @@ const Graph = ({}) => {
   };
 
   useEffect(() => {
-    console.log('visit home')
+    // console.log('visit home')
     // setLoading(true);
     fetchUserData();
   
@@ -104,7 +104,7 @@ const Graph = ({}) => {
     await auth()
     .signOut()
     .then(() => {
-      console.log('User signed out!')
+      // console.log('User signed out!')
       navigation.replace("NonSecureStack");
     });
   
@@ -130,7 +130,7 @@ const Graph = ({}) => {
         if (!snapshot.empty) {
           const riwayatMedisDoc = snapshot.docs[0]; // Assuming only one riwayat_medis document per profile.
           await riwayatMedisDoc.ref.delete();
-          console.log('Riwayat deleted successfully.');
+          // console.log('Riwayat deleted successfully.');
 
         }
 
@@ -145,7 +145,7 @@ const Graph = ({}) => {
             for (const logDoc of logSnapshot.docs) {
               await logDoc.ref.delete();
             }
-            console.log('Log deleted successfully.');
+            // console.log('Log deleted successfully.');
 
           }
         }
@@ -153,7 +153,7 @@ const Graph = ({}) => {
         
         const profileRef = firestore().collection('profile').doc(profile.id_profile);
         await profileRef.delete();
-        console.log('Profile deleted successfully.');
+        // console.log('Profile deleted successfully.');
         Alert.alert('Success', 'Berhasil menghapus data profile');
 
         fetchUserData();
@@ -178,7 +178,7 @@ const Graph = ({}) => {
 
   // function selectProfile(profile) {
   const selectProfile = async (profile) => {
-    console.log('selected : ',profile)
+    // console.log('selected : ',profile)
     setselectedProfile(profile.nama_lengkap)
     setselectedProfileObj(profile)
     const data = JSON.stringify(profile);
@@ -253,7 +253,7 @@ const Graph = ({}) => {
             <TouchableOpacity
                 // style={{height:"100%"}}
                 onPress={() => {
-                  console.log('edit')
+                  // console.log('edit')
                   toogleOpen()
                   navigation.push('FormProfile', { action: 'edit', profileData: l })
 
@@ -280,7 +280,7 @@ const Graph = ({}) => {
                 // onPress={signOut}
                 onPress={() => {
                   deleteProfile(l)
-                  console.log('delete')
+                  // console.log('delete')
                 }}
 
               >

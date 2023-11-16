@@ -43,18 +43,18 @@ const RegisterPage3 = ({route}) => {
     // await AsyncStorage.setItem('formRegister', formRegister);
     const jsonValue = await AsyncStorage.getItem('formRegister');
     const test =  !null ? JSON.parse(jsonValue) : null;
-    console.log('params reg3')
-    console.log(route.params)
-    console.log('getting from storage reg3 ')
+    // console.log('params reg3')
+    // console.log(route.params)
+    // console.log('getting from storage reg3 ')
     if(!route.params){
-      console.log('from async storage')
+      // console.log('from async storage')
 
       setProfile(test)
-      console.log(profile)
+      // console.log(profile)
 
       // setNamaLengkap(profile.nama_lengkap);
     }else{
-      console.log('from route')
+      // console.log('from route')
 
       setProfile(route.params)
     }
@@ -64,7 +64,7 @@ const RegisterPage3 = ({route}) => {
  
 
   React.useEffect(() => {
-    console.log('visit reg3')
+    // console.log('visit reg3')
 
     getFormRegisterStorage();
 
@@ -93,7 +93,7 @@ const RegisterPage3 = ({route}) => {
     setDate(currentDate);
     const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     setTanggalLahir(formattedDate)
-    console.log(formattedDate)
+    // console.log(formattedDate)
   };
 
   const nextHandler = async () => {
@@ -115,8 +115,8 @@ const RegisterPage3 = ({route}) => {
 
     const jsonValue = await AsyncStorage.getItem('formRegister');
     const test =  !null ? JSON.parse(jsonValue) : null;
-    console.log('succes store storage reg3')
-    console.log(test)
+    // console.log('succes store storage reg3')
+    // console.log(test)
 
     // navigation.navigate("RegisterPage4",{
     //     id_akun,
@@ -145,7 +145,7 @@ const RegisterPage3 = ({route}) => {
   const handleClickDatePicker = () => {
     // Your function to run when the input is clicked
     setShowDatePicker(true);
-    console.log(showDatePicker)
+    // console.log(showDatePicker)
   };
   // const test = () => {
   //   console.log(nama_lengkap,jenisKelamin,tanggalLahir,beratBadan,tinggiBadan)

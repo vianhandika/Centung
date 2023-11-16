@@ -45,7 +45,7 @@ const FormProfile = ({route}) => {
       setBeratBadan(profileData.berat_badan.toString())
       setDeviceId(profileData.device_id)
       setListRiwayatSakit(profileData.riwayat)
-      console.log('profile data : ', profileData)
+      // console.log('profile data : ', profileData)
     }
     // console.log('profile data : ', profileData)
 
@@ -62,7 +62,7 @@ const FormProfile = ({route}) => {
   const handleClickDatePicker = () => {
     // Your function to run when tj he input is clicked
     setShowDatePicker(true);
-    console.log(showDatePicker)
+    // console.log(showDatePicker)
   };
 
   const onChange = (event, selectedDate) => {
@@ -71,7 +71,7 @@ const FormProfile = ({route}) => {
     setDate(currentDate);
     const formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     setTanggalLahir(formattedDate)
-    console.log(formattedDate)
+    // console.log(formattedDate)
   };
 
   const addRiwayatSakit = () => {
@@ -124,9 +124,9 @@ const FormProfile = ({route}) => {
   };
 
   const countKonsNasi = (KKarbo)=>{
-    console.log(KKarbo)
+    // console.log(KKarbo)
 
-    console.log(KKarbo * 2.5)
+    // console.log(KKarbo * 2.5)
     return KKarbo * 2.5;
   };
 
@@ -163,12 +163,12 @@ const FormProfile = ({route}) => {
         id_profile: '-', // ID profil akan diisi setelah data profil ditambahkan
         riwayat: listRiwayatSakit,
       };
-      console.log(requestProfileData)
-      console.log(requestRiwayatMedisData)
+      // console.log(requestProfileData)
+      // console.log(requestRiwayatMedisData)
 
       const profileRef = firestore().collection('profile');
       const docRef = await profileRef.add(requestProfileData);
-      console.log('Data profil berhasil disimpan di Firestore dengan ID:', docRef.id);
+      // console.log('Data profil berhasil disimpan di Firestore dengan ID:', docRef.id);
       requestRiwayatMedisData.id_profile = docRef.id;
 
       const riwayatMedisRef = firestore().collection('riwayat_medis');
@@ -472,10 +472,10 @@ const FormProfile = ({route}) => {
     
       <Button title="Simpan" onPress={()=>{
          if (route.params.action === 'edit') {
-          console.log('edited')
+          // console.log('edited')
           editProfileData();
         } else {
-          console.log('added')
+          // console.log('added')
           addProfileData();
         }
       }} />

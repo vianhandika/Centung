@@ -20,7 +20,7 @@ const LineChartLog = ({data}) => {
 
   
 
-  console.log("refresh")
+  // console.log("refresh")
   // console.log([...Array(30).keys()].map((day) => `${day + 1}`))
   // Sample data for the line chart (x: dates, y: grams)
   const data1 = {
@@ -61,7 +61,7 @@ const LineChartLog = ({data}) => {
     }
     setListMonth(listMonth)
     setSelectedMonth(listMonth[0].value)
-    console.log(listMonth);
+    // console.log(listMonth);
   }
     
   const getFormatedChart = (log)=>{
@@ -97,8 +97,8 @@ const LineChartLog = ({data}) => {
       }
     });
 
-    console.log(data);
-    console.log(data.length);
+    // console.log(data);
+    // console.log(data.length);
     return {label, data}
   }
   function firestoreTimestampToFormattedString(timestamp) {
@@ -160,7 +160,7 @@ const LineChartLog = ({data}) => {
       const {startDate, endDate} = getStartAndEndOfMonth(selectedMonth.split(" ")[0],selectedMonth.split(" ")[1])
     // Create a Firestore timestamp for the end of September
     
-      console.log('call===============================')
+      // console.log('call===============================')
       const logRef = firestore().collection('log_centung');
       const logQuery = logRef.where('device_id', '==', data.device_id)
       .where('timestamp', '>=', startDate)
@@ -175,7 +175,7 @@ const LineChartLog = ({data}) => {
           const data = doc.data();
           logData.push({...data,initialTimestamp : firestoreTimestampToFormattedString(doc.data().timestamp)});
         });
-        console.log('Log data for device ID:',logData);
+        // console.log('Log data for device ID:',logData);
         const result  = getFormatedChart(logData)
         const formatedData ={
           labels: result.label,
@@ -192,13 +192,13 @@ const LineChartLog = ({data}) => {
           legend: ["Carbs Intake","Target"] // optional
         }
         // console.log(formatedData.datasets[0].data)
-        console.log(formatedData)
+        // console.log(formatedData)
 
         setChartData(formatedData)
       } else {
-      console.log(logSnapshot)
+      // console.log(logSnapshot)
 
-        console.log('No log data found for the specified device ID.');
+        // console.log('No log data found for the specified device ID.');
         setChartData({
           labels: [...Array(30).keys()].map((day) => `${day + 1}`), // Dates from 1 to 30
           datasets: [
@@ -219,7 +219,7 @@ const LineChartLog = ({data}) => {
     getListMonth()
 
     if (selectedMonth && profileData) {
-      console.log('profile data : ', profileData)
+      // console.log('profile data : ', profileData)
       getLogCentung(profileData)
       
 
@@ -230,8 +230,8 @@ const LineChartLog = ({data}) => {
 
   useEffect(() => {
     if (selectedMonth && profileData) {
-      console.log('selectedMonth : ', selectedMonth)
-      console.log('profiledata : ', profileData)
+      // console.log('selectedMonth : ', selectedMonth)
+      // console.log('profiledata : ', profileData)
       // const {startDate, endDate} = getStartAndEndOfMonth(selectedMonth.split(" ")[0],selectedMonth.split(" ")[1])
 
       // console.log(startDate)
